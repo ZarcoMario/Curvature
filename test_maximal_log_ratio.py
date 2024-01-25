@@ -15,7 +15,7 @@ from movement_onset_detection import onset_detection
 
 
 # VR-S1 Data
-p_ = 1
+p_ = 3
 participant_ = r"\P" + str(p_).zfill(2)
 path_ = os.path.dirname(os.getcwd()) + r"\VR-S1" + participant_ + r"\S001"
 
@@ -25,7 +25,9 @@ start_time = results['start_time'].to_numpy()
 initiation_time = results['initial_time'].to_numpy()
 t_threshold = initiation_time - start_time
 
-for trial_number in range(17, 17 + 1, 1):
+fin_pos_x = pd.read_csv(path_results, usecols=['trial_num', 'fin_pos_x'], index_col=0)
+
+for trial_number in range(34, 45 + 1, 1):
 
     path_trial = path_ + r"\trackers" + r"\controllertracker_movement_T" + str(trial_number).zfill(3) + ".csv"
 
@@ -74,3 +76,48 @@ for trial_number in range(17, 17 + 1, 1):
     idx_ub = np.argwhere(t > to).T[0][0]
     idx_lb = np.argwhere(t < to).T[0][-1]
 
+    # Interpolation to find the corresponding location and velocity
+    if abs(t[idx_lb] - to) < abs(t[idx_ub] - to):
+        idx = idx_lb
+    else:
+        idx = idx_ub
+
+    # NOTE: THIS IS ONLY CORRECT FOR VR-S1
+    if fin_pos_x.loc[trial_number, 'fin_pos_x'] < 0:
+        target_1 = np.array([0.25, 0.65, 1])
+        target_2 = np.array([-0.25, 0.65, 1])  # Left is correct
+
+    else:
+        target_1 = np.array([-0.25, 0.65, 1])
+        target_2 = np.array([0.25, 0.65, 1])  # Right is correct
+
+    # Maximal Log Ratio (2D)
+    max_log2, x_max2, z_max2 = maximal_log_ratio_2d(x[idx:], z[idx:], target_1[[0, 1]], target_2[[0, 1]])
+
+    # Maximal Log Ratio (3D)
+    max_log3, x_max3, z_max3, y_max3 = maximal_log_ratio_3d(x[idx:], z[idx:], y[idx:], target_1, target_2)
+
+    # Plotting results
+    fig = plt.figure(figsize=(16, 8))
+    gs = GridSpec(1, 2)
+
+    ax = fig.add_subplot(gs[0, 0])
+    ax.grid(True)
+    ax.plot(x[idx:], z[idx:], 'b.', label='trajectory')
+    ax.plot(x_max2, z_max2, 'ro', label='max log rat')
+    ax.set_xlabel('x')
+    ax.set_ylabel('z')
+    ax.set_title("Max Log Rat: " + str(max_log2))
+    ax.legend()
+
+    ax = fig.add_subplot(gs[0, 1], projection='3d')
+    ax.plot(x[idx:], z[idx:], y[idx:], 'b.', label='trajectory')
+    ax.plot(x_max3, z_max3, y_max3, 'ro', label='max log rat')
+    ax.set_xlabel('x')
+    ax.set_ylabel('z')
+    ax.set_zlabel('y')
+    ax.set_title("Max Log Rat:" + str(max_log3))
+    ax.legend()
+    ax.set_xlim(-0.3, 0.3)
+
+    plt.show()

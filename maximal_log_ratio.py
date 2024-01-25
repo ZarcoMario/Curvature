@@ -13,12 +13,15 @@ import numpy as np
 
 def maximal_log_ratio_2d(x_tr, y_tr, t1, t2):
     '''
-
-    :param x_tr:
-    :param y_tr:
-    :param t1:
-    :param t2:
+    Max log ratio in 2D (See the document Geometric Descriptors of Curvature for more details)
+    :param x_tr: trajectory data along a first dimension (e.g. x)
+    :param y_tr: trajectory data along a second dimension (e.g. z)
+    :param t1: alternative target
+    :param t2: correct target
     :return:
+        - Max log ratio (MLR)
+        - Coordinate of the first dimension corresponding to MLR
+        - Coordinate of the second dimension corresponding to MLR
     '''
     d_1, d_2 = [], []
     for x, y in zip(x_tr, y_tr):
@@ -39,13 +42,16 @@ def maximal_log_ratio_2d(x_tr, y_tr, t1, t2):
 
 def maximal_log_ratio_3d(x_tr, y_tr, z_tr, t1, t2):
     '''
-
-    :param x_tr:
-    :param y_tr:
-    :param z_tr:
-    :param t1:
-    :param t2:
+    Max log ratio in 3D (See the document Geometric Descriptors of Curvature for more details)
+    :param x_tr: trajectory data along a first dimension (e.g. x)
+    :param y_tr: trajectory data along a second dimension (e.g. z)
+    :param z_tr: trajectory data along a second dimension (e.g. y)
+    :param t1: alternative target
+    :param t2: correct target
     :return:
+        - Max log ratio (MLR)
+        - Coordinate of the first dimension corresponding to MLR
+        - Coordinate of the second dimension corresponding to MLR
     '''
     d_1, d_2 = [], []
     for x, y, z in zip(x_tr, y_tr, z_tr):

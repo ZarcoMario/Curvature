@@ -3,11 +3,12 @@ import numpy as np
 
 def _get_angle_2d(pi, pn, pf):
     '''
-    Calculate
-    :param pi:
-    :param pn:
-    :param pf:
-    :return:
+    Calculate the signed angle between two-dimensional vectors
+        according to the maximum perpendicular deviation convention
+    :param pi: first sample
+    :param pn: n-th sample
+    :param pf: last sample
+    :return: angle
     '''
     if pf[0] < 0:
         v2 = pn - pi
@@ -23,10 +24,13 @@ def _get_angle_2d(pi, pn, pf):
 
 def maximum_deviation_2d(x_tr, y_tr):
     '''
-
-    :param x_tr:
-    :param y_tr:
+    Calculate maximum deviation in 2D (See the document Geometric Descriptors of Curvature for more details)
+    :param x_tr: trajectory data along a first dimension (e.g. x)
+    :param y_tr: trajectory data along a second dimension (e.g. z)
     :return:
+        - Maximum Perpendicular Deviation (MPD)
+        - Coordinate of the first dimension corresponding to MPD
+        - Coordinate of the second dimension corresponding to MPD
     '''
     xy = np.column_stack((x_tr, y_tr))
     # Initial Sample
@@ -49,7 +53,7 @@ def maximum_deviation_2d(x_tr, y_tr):
     # Maximum Distance
     max_dis = np.max(dis)
     # Maximum Deviation (Maximum distance normalized by distance between pi and pf)
-    max_dev = max_dis / np.linalg.norm(pf - pi)
+    # max_dev = max_dis / np.linalg.norm(pf - pi)
     # Index
     idx = np.argwhere(max_dis == dis)[0][0]
 
@@ -58,17 +62,17 @@ def maximum_deviation_2d(x_tr, y_tr):
     x_max = p_tr[idx, 0]
     y_max = p_tr[idx, 1]
 
-    return np.sign(ang[idx]) * max_dev, np.sign(ang[idx]) * max_dis, x_max, y_max, idx
+    return np.sign(ang[idx]) * max_dis, x_max, y_max
 
 
 def _get_sign_3d(p1, p2, p3, pn):
     '''
-    
-    :param p1:
-    :param p2:
-    :param p3:
-    :param pn:
-    :return:
+    Calculate the sign of maximum perpendicular deviation
+    :param p1: vector to first sample
+    :param p2: normal vector
+    :param p3: vector to final sample
+    :param pn: vector to n-th sample
+    :return: sign
     '''
     if p3[0] < 0:
         vb = p3 - p1
@@ -93,11 +97,12 @@ def _get_sign_3d(p1, p2, p3, pn):
 
 def _get_angle_3d(pi, pn, pf):
     '''
-
-    :param pi:
-    :param pn:
-    :param pf:
-    :return:
+    Calculate the non-signed angle between two-dimensional vectors
+        according to the maximum perpendicular deviation convention
+    :param pi: first sample
+    :param pn: n-th sample
+    :param pf: final sample
+    :return: angle
     '''
     v1 = pn - pi
     v2 = pf - pi
@@ -114,11 +119,15 @@ def _get_angle_3d(pi, pn, pf):
 
 def maximum_deviation_3d(x_tr, y_tr, z_tr):
     '''
-
-    :param x_tr:
-    :param y_tr:
-    :param z_tr:
+    Calculate maximum deviation in 3D (See the document Geometric Descriptors of Curvature for more details)
+        NOTE: This function assumes a different coordinate system from UNITY 3D.
+    :param x_tr: trajectory data along a first dimension (e.g. x)
+    :param y_tr: trajectory data along a second dimension (e.g. z)
+    :param z_tr: trajectory data along a third dimension (e.g. y)
     :return:
+        - Maximum Perpendicular Deviation (MPD)
+        - Coordinate of the first dimension corresponding to MPD
+        - Coordinate of the second dimension corresponding to MPD
     '''
     xy = np.column_stack((x_tr, y_tr, z_tr))
     # Initial sample
@@ -145,7 +154,7 @@ def maximum_deviation_3d(x_tr, y_tr, z_tr):
     # Maximum Distance
     max_dis = np.max(dis)
     # Maximum Deviation (Maximum distance normalized by distance between pi and pf)
-    max_dev = max_dis / np.linalg.norm(pf - pi)
+    # max_dev = max_dis / np.linalg.norm(pf - pi)
     # Index
     idx = np.argwhere(max_dis == dis)[0][0]
 
@@ -155,4 +164,4 @@ def maximum_deviation_3d(x_tr, y_tr, z_tr):
     y_max = p_tr[idx, 1]
     z_max = p_tr[idx, 2]
 
-    return sign[idx] * max_dev, sign[idx] * max_dis, x_max, y_max, z_max, idx
+    return sign[idx] * max_dis, x_max, y_max, z_max

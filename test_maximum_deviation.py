@@ -25,7 +25,7 @@ start_time = results['start_time'].to_numpy()
 initiation_time = results['initial_time'].to_numpy()
 t_threshold = initiation_time - start_time
 
-for trial_number in range(17, 20 + 1, 1):
+for trial_number in range(160, 170 + 1, 1):
 
     path_trial = path_ + r"\trackers" + r"\controllertracker_movement_T" + str(trial_number).zfill(3) + ".csv"
 
@@ -80,13 +80,11 @@ for trial_number in range(17, 20 + 1, 1):
         idx = idx_ub
 
     # Maximum Perpendicular Deviation (2D)
-    max_dev2, max_dis2, x_max2, z_max2, idx_max2 = maximum_deviation_2d(x[idx:],
-                                                                        z[idx:])
+    max_dis2, x_max2, z_max2 = maximum_deviation_2d(x[idx:], z[idx:])
 
     # Maximum Perpendicular Deviation (3D)
-    max_dev3, max_dis3, x_max3, z_max3, y_max3, idx_max3 = maximum_deviation_3d(x[idx:],
-                                                                                z[idx:],
-                                                                                y[idx:])
+    max_dis3, x_max3, z_max3, y_max3 = maximum_deviation_3d(x[idx:], z[idx:], y[idx:])
+
     # Plotting results
     fig = plt.figure(figsize=(16, 8))
     gs = GridSpec(1, 2)

@@ -73,3 +73,21 @@ for trial_number in range(17, 284 + 1, 1):
     # Interpolation to find the corresponding location and velocity
     idx_ub = np.argwhere(t > to).T[0][0]
     idx_lb = np.argwhere(t < to).T[0][-1]
+
+    # Interpolation to find the corresponding location and velocity
+    if abs(t[idx_lb] - to) < abs(t[idx_ub] - to):
+        idx = idx_lb
+    else:
+        idx = idx_ub
+
+    print("Trial", trial_number)
+
+    # Total Curvature (2D)
+    tot_cur2 = total_curvature_2d(x[idx:], z[idx:])
+
+    print("Total Curvature (2D)", tot_cur2)
+
+    # Total Curvature (3D)
+    tot_cur3 = total_curvature_3d(x[idx:], z[idx:], y[idx:])
+
+    print("Total Curvature (3D)", tot_cur3)
